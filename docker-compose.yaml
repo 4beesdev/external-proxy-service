@@ -1,0 +1,31 @@
+services:
+  server:
+    build:
+#      context: ../pf-backend
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/pf
+#      SPRING_DATASOURCE_USERNAME: pf
+#      SPRING_DATASOURCE_PASSWORD: abcdefghpera123
+    ports:
+      - "8081:8081"
+#    depends_on:
+#      - db
+
+#  db:
+#    image: postgres:13
+#    restart: always
+#    environment:
+#      POSTGRES_DB: pf
+#      POSTGRES_USER: pf
+#      POSTGRES_PASSWORD: abcdefghpera123
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#    ports:
+#      - "5439:5432"
+#volumes:
+#  postgres_data:
