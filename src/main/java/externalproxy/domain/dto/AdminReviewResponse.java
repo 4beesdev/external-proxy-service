@@ -2,6 +2,7 @@ package externalproxy.domain.dto;
 
 import externalproxy.domain.enumeration.ReviewStatus;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,5 +26,6 @@ public class AdminReviewResponse {
     private Long repliedByAdminId;
     private LocalDateTime deletedAt;
     private Long deletedByAdminId;
+    private List<MediaResponse> media;
 }
 

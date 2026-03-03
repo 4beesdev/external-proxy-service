@@ -4,6 +4,7 @@ import externalproxy.filters.JwtAuthenticationFilter;
 import externalproxy.service.AdminService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,6 +29,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 @EnableMethodSecurity(jsr250Enabled = true)
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -60,6 +62,8 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((req, res, authEx) -> {
+                            log.warn("SECURITY unauthorized method={}, uri={}, reason=TOKEN_MISSING, message={}",
+                                    req.getMethod(), req.getRequestURI(), authEx.getMessage());
                             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             res.setCharacterEncoding("UTF-8");
                             res.setContentType("application/json");
@@ -68,6 +72,8 @@ public class SecurityConfig {
                             );
                         })
                         .accessDeniedHandler((req, res, deniedEx) -> {
+                            log.warn("SECURITY forbidden method={}, uri={}, reason=INSUFFICIENT_PERMISSIONS, message={}",
+                                    req.getMethod(), req.getRequestURI(), deniedEx.getMessage());
                             res.setStatus(HttpServletResponse.SC_FORBIDDEN);
                             res.setCharacterEncoding("UTF-8");
                             res.setContentType("application/json");

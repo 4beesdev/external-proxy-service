@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,5 +18,6 @@ public class ReviewResponse {
     private LocalDateTime createdAt;
     private long likeCount;
     private String adminReply;
+    private List<MediaResponse> media;
 }
 
