@@ -8,24 +8,25 @@ services:
       - .env
     environment:
       SPRING_PROFILES_ACTIVE: prod
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/pf
-#      SPRING_DATASOURCE_USERNAME: pf
-#      SPRING_DATASOURCE_PASSWORD: abcdefghpera123
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/external_proxy
+      SPRING_DATASOURCE_USERNAME: external_proxy
+      SPRING_DATASOURCE_PASSWORD: external_proxy
+      IP_HASH_SECRET: ${IP_HASH_SECRET}
     ports:
       - "8081:8081"
-#    depends_on:
-#      - db
+    depends_on:
+      - db
 
-#  db:
-#    image: postgres:13
-#    restart: always
-#    environment:
-#      POSTGRES_DB: pf
-#      POSTGRES_USER: pf
-#      POSTGRES_PASSWORD: abcdefghpera123
-#    volumes:
-#      - postgres_data:/var/lib/postgresql/data
-#    ports:
-#      - "5439:5432"
-#volumes:
-#  postgres_data:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: external_proxy
+      POSTGRES_USER: external_proxy
+      POSTGRES_PASSWORD: external_proxy
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5439:5432"
+volumes:
+  postgres_data:

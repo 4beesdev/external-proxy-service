@@ -18,7 +18,7 @@ public class CorsConfig implements WebMvcConfigurer {
                         "https://m-one-bosnia.netlify.app",
                         "https://m-one-nm.netlify.app", 
                         "https://m-one-alb.netlify.app")
-                .allowedMethods("GET", "OPTIONS")
+                .allowedMethods("GET", "POST", "OPTIONS")
                 .allowedHeaders("*");
     }
 }
