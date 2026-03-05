@@ -105,25 +105,28 @@ class ReviewIntegrationTests {
                         .header("X-Forwarded-For", "9.9.9.9"))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/api/reviews"))
+        mockMvc.perform(get("/api/reviews").header("X-Forwarded-For", "9.9.9.9"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].likeCount").value(1));
+                .andExpect(jsonPath("$[0].likeCount").value(1))
+                .andExpect(jsonPath("$[0].hasLiked").value(true));
 
         mockMvc.perform(post("/api/reviews/" + id + "/like")
                         .header("X-Forwarded-For", "9.9.9.9"))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/api/reviews"))
+        mockMvc.perform(get("/api/reviews").header("X-Forwarded-For", "9.9.9.9"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].likeCount").value(0));
+                .andExpect(jsonPath("$[0].likeCount").value(0))
+                .andExpect(jsonPath("$[0].hasLiked").value(false));
 
         mockMvc.perform(post("/api/reviews/" + id + "/like")
                         .header("X-Forwarded-For", "9.9.9.9"))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/api/reviews"))
+        mockMvc.perform(get("/api/reviews").header("X-Forwarded-For", "9.9.9.9"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].likeCount").value(1));
+                .andExpect(jsonPath("$[0].likeCount").value(1))
+                .andExpect(jsonPath("$[0].hasLiked").value(true));
     }
 
     @Test

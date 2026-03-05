@@ -32,8 +32,8 @@ public class ReviewController {
     }
 
     @GetMapping()
-    public List<ReviewResponse> listReviews() {
-        return reviewService.listReviews();
+    public List<ReviewResponse> listReviews(HttpServletRequest httpServletRequest) {
+        return reviewService.listReviews(httpServletRequest);
     }
 
     @GetMapping("/average")

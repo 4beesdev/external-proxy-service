@@ -36,6 +36,7 @@ import java.util.Base64;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletRequest;
@@ -93,7 +94,7 @@ public class ReviewService {
         review.setStatus(ReviewStatus.PENDING);
 
         Review saved = reviewRepository.save(review);
-        return new ReviewResponse(saved.getId(), saved.getRating(), saved.getComment(), saved.getUsername(), saved.getCreatedAt(), 0L, null, List.of());
+        return new ReviewResponse(saved.getId(), saved.getRating(), saved.getComment(), saved.getUsername(), saved.getCreatedAt(), 0L, false, null, List.of());
     }
 
     @Transactional
@@ -158,14 +159,18 @@ public class ReviewService {
             }
         }
 
-        return new ReviewResponse(saved.getId(), saved.getRating(), saved.getComment(), saved.getUsername(), saved.getCreatedAt(), 0L, null, mediaResponses);
+        return new ReviewResponse(saved.getId(), saved.getRating(), saved.getComment(), saved.getUsername(), saved.getCreatedAt(), 0L, false, null, mediaResponses);
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewResponse> listReviews() {
+    public List<ReviewResponse> listReviews(HttpServletRequest httpServletRequest) {
         List<Review> reviews = reviewRepository.findAllByStatusOrderByCreatedAtDesc(ReviewStatus.APPROVED);
         Map<Long, Long> likeCounts = likeCountsForReviews(reviews);
         Map<Long, List<MediaResponse>> mediaByReviewId = mediaForReviews(reviews);
+
+        String clientIp = clientIpResolver.resolveClientIp(httpServletRequest);
+        String ipHash = ipHashService.hashIp(clientIp);
+        Set<Long> likedReviewIds = reviewLikeRepository.findReviewIdsByIpHash(ipHash);
 
         return reviews.stream()
                 .map(r -> new ReviewResponse(
@@ -175,6 +180,7 @@ public class ReviewService {
                         r.getUsername(),
                         r.getCreatedAt(),
                         likeCounts.getOrDefault(r.getId(), 0L),
+                        likedReviewIds.contains(r.getId()),
                         r.getAdminReply(),
                         mediaByReviewId.getOrDefault(r.getId(), List.of())
                 ))
