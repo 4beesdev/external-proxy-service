@@ -78,7 +78,7 @@ class ReviewIntegrationTests {
     }
 
     @Test
-    void secondLikeFromSameIpIsRejected() throws Exception {
+    void likeEndpointTogglesLikeFromSameIp() throws Exception {
         String create = """
                 {"rating":5,"comment":"ok","username":"u","email":"u@example.com"}
                 """;
@@ -111,8 +111,19 @@ class ReviewIntegrationTests {
 
         mockMvc.perform(post("/api/reviews/" + id + "/like")
                         .header("X-Forwarded-For", "9.9.9.9"))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.code").value("ALREADY_LIKED"));
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/reviews"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].likeCount").value(0));
+
+        mockMvc.perform(post("/api/reviews/" + id + "/like")
+                        .header("X-Forwarded-For", "9.9.9.9"))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/reviews"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].likeCount").value(1));
     }
 
     @Test

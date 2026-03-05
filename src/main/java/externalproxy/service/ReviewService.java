@@ -18,7 +18,6 @@ import externalproxy.repository.ReviewMediaRepository;
 import externalproxy.repository.ReviewRepository;
 import externalproxy.support.ClientIpResolver;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import externalproxy.support.AdvisoryLockService;
 import externalproxy.support.IpHashService;
-import externalproxy.support.exception.AlreadyLikedException;
 import externalproxy.support.exception.ReviewNotFoundException;
 import externalproxy.support.exception.TooManyReviewsException;
 import externalproxy.support.exception.ReviewNotApprovedException;
@@ -195,15 +193,16 @@ public class ReviewService {
             throw new ReviewNotApprovedException(reviewId);
         }
 
+        var existingLike = reviewLikeRepository.findByReviewIdAndIpHash(reviewId, ipHash);
+        if (existingLike.isPresent()) {
+            reviewLikeRepository.delete(existingLike.get());
+            return;
+        }
+
         ReviewLike rl = new ReviewLike();
         rl.setReview(review);
         rl.setIpHash(ipHash);
-
-        try {
-            reviewLikeRepository.saveAndFlush(rl);
-        } catch (DataIntegrityViolationException e) {
-            throw new AlreadyLikedException();
-        }
+        reviewLikeRepository.save(rl);
     }
 
     @Transactional(readOnly = true)

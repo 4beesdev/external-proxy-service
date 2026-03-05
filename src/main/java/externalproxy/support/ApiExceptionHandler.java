@@ -1,6 +1,5 @@
 package externalproxy.support;
 
-import externalproxy.support.exception.AlreadyLikedException;
 import externalproxy.support.exception.ReviewInvalidStateException;
 import externalproxy.support.exception.ReviewNotFoundException;
 import externalproxy.support.exception.ReviewNotApprovedException;
@@ -25,12 +24,6 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiErrorResponse> tooManyReviews(TooManyReviewsException ex) {
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
                 .body(ApiErrorResponse.of("TOO_MANY_REVIEWS", ex.getMessage()));
-    }
-
-    @ExceptionHandler(AlreadyLikedException.class)
-    public ResponseEntity<ApiErrorResponse> alreadyLiked(AlreadyLikedException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ApiErrorResponse.of("ALREADY_LIKED", ex.getMessage()));
     }
 
     @ExceptionHandler(ReviewNotFoundException.class)
