@@ -19,6 +19,7 @@ public class ReviewResponse {
     private long likeCount;
     private boolean hasLiked;
     private String adminReply;
+    private LocalDateTime repliedAt;
     private List<MediaResponse> media;
 }
 

@@ -94,7 +94,18 @@ public class ReviewService {
         review.setStatus(ReviewStatus.PENDING);
 
         Review saved = reviewRepository.save(review);
-        return new ReviewResponse(saved.getId(), saved.getRating(), saved.getComment(), saved.getUsername(), saved.getCreatedAt(), 0L, false, null, List.of());
+        return new ReviewResponse(
+                saved.getId(),
+                saved.getRating(),
+                saved.getComment(),
+                saved.getUsername(),
+                saved.getCreatedAt(),
+                0L,
+                false,
+                null,
+                null,
+                List.of()
+        );
     }
 
     @Transactional
@@ -159,7 +170,18 @@ public class ReviewService {
             }
         }
 
-        return new ReviewResponse(saved.getId(), saved.getRating(), saved.getComment(), saved.getUsername(), saved.getCreatedAt(), 0L, false, null, mediaResponses);
+        return new ReviewResponse(
+                saved.getId(),
+                saved.getRating(),
+                saved.getComment(),
+                saved.getUsername(),
+                saved.getCreatedAt(),
+                0L,
+                false,
+                null,
+                null,
+                mediaResponses
+        );
     }
 
     @Transactional(readOnly = true)
@@ -182,6 +204,7 @@ public class ReviewService {
                         likeCounts.getOrDefault(r.getId(), 0L),
                         likedReviewIds.contains(r.getId()),
                         r.getAdminReply(),
+                        r.getRepliedAt(),
                         mediaByReviewId.getOrDefault(r.getId(), List.of())
                 ))
                 .toList();
