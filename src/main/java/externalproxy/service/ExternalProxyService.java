@@ -16,18 +16,33 @@ public class ExternalProxyService {
     @Value("${external.api.key}")
     private String externalApiKey;
 
+    @Value("${external.pudo.api.key}")
+    private String externalPudoApiKey;
+
     @Value("${api.external.url}")
     private String url;
 
+    @Value("${api.external.pudo.url}")
+    private String pudoUrl;
+
+    public ResponseEntity<String> getPudoLocations() {
+        return proxyGetRequest(pudoUrl, externalPudoApiKey);
+    }
+
     public ResponseEntity<?> callExternalService(String id) {
+        return proxyGetRequest(url + id, externalApiKey);
+    }
+
+    private ResponseEntity<String> proxyGetRequest(String targetUrl, String apiKey) {
         try {
             return webClient
                     .get()
-                    .uri(url+ id)
-                    .header("x-api-key", externalApiKey)
+                    .uri(targetUrl)
+                    .header("Accept", "application/json")
+                    .header("X-API-Key", apiKey)
                     .exchangeToMono(response -> response.toEntity(String.class))
                     .block();
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_GATEWAY)
                     .body("External service unavailable");
