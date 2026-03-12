@@ -87,7 +87,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/signin",
                                 "/api/reviews/**",
-                                "/api/statushistory/**"
+                                "/api/statushistory/**",
+                                "/api/locations"
                         ).permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()

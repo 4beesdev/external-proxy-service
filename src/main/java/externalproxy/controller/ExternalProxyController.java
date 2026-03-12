@@ -13,6 +13,11 @@ public class ExternalProxyController {
 
     private final ExternalProxyService externalProxyService;
 
+    @GetMapping("/api/locations")
+    public ResponseEntity<String> getLocations() {
+        return externalProxyService.getPudoLocations();
+    }
+
     @GetMapping("/api/statushistory/{id}")
     public ResponseEntity<?> getStatusHistory(@PathVariable("id") String id) {
         return externalProxyService.callExternalService(id);
