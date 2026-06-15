@@ -1,6 +1,7 @@
 package externalproxy.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ExternalProxyService {
 
@@ -43,6 +45,7 @@ public class ExternalProxyService {
                     .exchangeToMono(response -> response.toEntity(String.class))
                     .block();
         } catch (Exception e) {
+            log.error("Proxy GET failed url={} : {}", targetUrl, e.toString(), e);
             return ResponseEntity
                     .status(HttpStatus.BAD_GATEWAY)
                     .body("External service unavailable");
